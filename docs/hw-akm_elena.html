@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Simulation on AKM fixed effects</title>
+
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css" />
+<!--[if lt IE 9]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.ie.min.css" />
+<![endif]-->
+
+<!-- Bootstrap core CSS -->
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.css" rel="stylesheet">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">AKM Simulation - Cemfi Summer School</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="notes.html">
+    <span class="fa fa-calendar"></span>
+     
+    Sched
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-book"></span>
+     
+    Labs
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="lab-discretechoice.html">EM mlogit</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-pencil"></span>
+     
+    Homeworks
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="static-labor-supply.html">Static LS</a>
+    </li>
+    <li>
+      <a href="dynprog-HotzMiller.html">Hotz and Miller</a>
+    </li>
+    <li>
+      <a href="dynamic-labor-supply.html">Dynamic LS</a>
+    </li>
+    <li>
+      <a href="earnings-mixtures.html">Mixtures</a>
+    </li>
+    <li>
+      <a href="hw-akm.html">Two-way FE</a>
+    </li>
+    <li>
+      <a href="ShimerSmith.html">Sorting</a>
+    </li>
+    <li>
+      <a href="hw-partialdim.html">Partial dimension sets</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/elenamanresa/AKM-simulation/tree/master">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Simulation on AKM fixed effects</h1>
+<h4 class="date">02 May, 2024</h4>
+
+</div>
+
+
+<p>The goal of the following simulation is to develop our understanding of the two-way fixed effect model. See the original paper by <a href="http://onlinelibrary.wiley.com/doi/10.1111/1468-0262.00020/full">Abowd Kramartz and Margolis</a>.</p>
+<div id="constructing-employer-employee-matched-data" class="section level1">
+<h1>Constructing Employer-Employee matched data</h1>
+<div id="simulating-a-network" class="section level2">
+<h2>Simulating a network</h2>
+<p>One central piece is to have a network of workers and firms over time. We then start by simulating such an object. The rest of the simulation will focus on adding wages to this model. As we know, a central issue of the network will be the number of movers.</p>
+<p>We are going to model the mobility between workers and firms. Given a transition matrix we can solve for a stationary distrubtion, and then construct our panel from there.</p>
+<pre class="r"><code>nk = 30
+nl = 10
+
+
+## Calibration to CHK data
+# psi_sd = 0.16
+# alpha_sd = 0.29
+# w_sigma = 0.37
+
+alpha_sd = 1
+psi_sd   = 1
+
+# let&#39;s draw some FE
+psi   = qnorm(1:nk/(nk+1)) * alpha_sd
+alpha = qnorm(1:nl/(nl+1)) * psi_sd
+
+# let&#39;s assume moving PR is fixed
+lambda = 0.05
+
+csort = 0.5 # sorting effect
+cnetw = 0.2 # network effect
+csig  = 0.5 
+
+# lets create type specific transition matrices
+# we are going to use joint normal centered on different values
+G = array(0,c(nl,nk,nk)) # def: conditional distribution k,k&#39; given l
+for (l in 1:nl) for (k in 1:nk) {
+  #G[l,k,] = dnorm(csort*(psi[k] - alpha[l])) * dnorm(cnetw*(psi[k] - psi))
+  G[l,k,] = dnorm( psi - cnetw *psi[k] - csort * alpha[l],sd = csig)
+  #G[l,k,] = (dnorm(csort*(psi[k] - alpha[l])) + dnorm(cnetw*(psi[k] - psi)))/2
+  G[l,k,] = G[l,k,]/sum(G[l,k,])
+}
+
+
+# we then solve for the stationary distribution over psis for each alpha value
+H = array(1/nk,c(nl,nk))
+for (l in 1:nl) {
+ M = G[l,,]
+ for (i in 1:100) {
+   H[l,] = t(G[l,,]) %*% H[l,]
+ }
+}
+
+Plot1=wireframe(G[1,,],aspect = c(1,1),xlab = &quot;previous firm&quot;,ylab=&quot;next firm&quot;)
+Plot2=wireframe(G[nl,,],aspect = c(1,1),xlab = &quot;previous firm&quot;,ylab=&quot;next firm&quot;)
+grid.arrange(Plot1, Plot2,nrow=1)</code></pre>
+<p><img src="hw-akm_elena_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>And we can plot the joint distribution of matches</p>
+<pre class="r"><code>wireframe(H,aspect = c(1,1),xlab = &quot;worker&quot;,ylab=&quot;firm&quot;)</code></pre>
+<p><img src="hw-akm_elena_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>The next step is to simulate our network given our transitions rules.</p>
+<pre class="r"><code>nt = 5
+ni = 100000
+
+# we simulate a panel
+network    = array(0,c(ni,nt))
+spellcount = array(0,c(ni,nt))
+A = rep(0,ni)
+
+for (i in 1:ni) {
+  # we draw the worker type
+  l = sample.int(nl,1)
+  A[i]=l 
+  # at time 1, we draw from H
+  network[i,1] = sample.int(nk,1,prob = H[l,])
+  for (t in 2:nt) {
+    if (runif(1)&lt;lambda) { #movers
+      network[i,t] = sample.int(nk,1,prob = G[l,network[i,t-1],])
+      spellcount[i,t] = spellcount[i,t-1] +1
+    } else { # stayers
+      network[i,t]    = network[i,t-1]
+      spellcount[i,t] = spellcount[i,t-1]
+    }
+  }
+}
+
+data  = data.table(melt(network,c(&#39;i&#39;,&#39;t&#39;))) 
+data2 = data.table(melt(spellcount,c(&#39;i&#39;,&#39;t&#39;)))
+setnames(data,&quot;value&quot;,&quot;k&quot;) # firm type
+data &lt;- data[,spell := data2$value] # number of spells
+data &lt;- data[,l := A[i],i] # worker type
+data &lt;- data[,alpha := alpha[l],l] # worker FE
+data &lt;- data[,psi := psi[k],k] # firm FE</code></pre>
+<p>The final step is assigning identities to firms. We are going to do this by randomly assigning firm ids to spells.</p>
+<pre class="r"><code>firm_size = 10
+within_firm_count = ni/(firm_size*nk*nt)
+
+dspell &lt;- data[,list(len=.N),list(i,spell,k)] #length of the spell in each firm by worker
+dspell &lt;- dspell[,fid := sample( 1: pmax(1,sum(len)/(firm_size*nt) ) ,.N,replace=TRUE) , k]
+dspell &lt;- dspell[,fid := .GRP, list(k,fid)]
+
+setkey(data,i,spell)
+setkey(dspell,i,spell)
+
+data &lt;- data[, fid:= dspell[data,fid]]</code></pre>
+<p><span class="label label-success">Task 1</span> Compute: - mean firm size, in the crossection, expect something like 15. - mean number of movers per firm in total in our panel (a worker that moved from firm i to j is counted as mover in firm i as well as in firm j).</p>
+<pre class="r"><code>#firm size
+firm_size_t = data[,.N,list(fid,t)]
+setkey(firm_size_t,fid)
+firm_size = firm_size_t[,mean(N),fid]
+data &lt;- data[, firm_size:= firm_size[fid,V1]]
+Nfirm = firm_size[.N][[1]]
+
+#movers per firm
+firm_movers_t = data[,max(spell),i] # we identify the movers
+firm_movers_t = firm_movers_t[,mover:=(V1&gt;0),i]
+data_aux &lt;- data
+data_aux &lt;- data_aux[, mover:= firm_movers_t[i,mover]]
+firm_mover &lt;- data_aux[mover==TRUE, unique(i),fid]
+firm_mover &lt;- firm_mover[,ones:=1]
+firm_mover &lt;- firm_mover[,sum(ones),fid]
+
+data &lt;- data[, movers_size:= firm_mover[fid,V1]]
+
+# PLOTS
+hist(data[t==1]$firm_size) # at any t, the firm size distribution is the same</code></pre>
+<p><img src="hw-akm_elena_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>hist(data$movers_size)</code></pre>
+<p><img src="hw-akm_elena_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+</div>
+<div id="simulating-akm-wages" class="section level2">
+<h2>Simulating AKM wages</h2>
+<p>We start with just AKM wages, which is log additive with some noise.</p>
+<pre class="r"><code>w_sigma = 0.8
+data &lt;- data[, lw := alpha + psi + w_sigma * rnorm(.N) ]</code></pre>
+<p><span class="label label-success">Task 2</span> We use this generated data to create the event study plot from Card-Heining-Kline:</p>
+<ol style="list-style-type: decimal">
+<li>Compute the mean wage within firm</li>
+<li>group firms into quartiles</li>
+<li>select workers around a move (2 periods pre, 2 periods post)</li>
+<li>compute wages before/after the mover for each transitions (from each quartile to each quartile)</li>
+</ol>
+<pre class="r"><code>data[,mean_w:=mean(lw),fid]
+q1 = quantile(data$mean_w,.25)
+q2 = quantile(data$mean_w,.5)
+q3 = quantile(data$mean_w,.75)
+
+data[,flag_q:=0]
+data[mean_w &lt;= q1,flag_q:=1]
+data[mean_w &gt; q3,flag_q:=4]
+data[(mean_w &lt; q2) &amp; (mean_w&gt;q1) ,flag_q:=2]
+data[(mean_w &lt; q3) &amp; (mean_w &gt;q2) ,flag_q:=3]
+
+# select one time movers at time 3:
+data[,max_spell:=max(spell),i]
+
+data_aux &lt;- data[max_spell == 1]
+data_aux[,flag_ckh1:=0]
+data_aux[,flag_ckh2:=0]
+
+data_aux[spell == 1 &amp; t == 3,flag_ckh1:=1]
+data_aux[spell == 0 &amp; t == 2,flag_ckh2:=1]
+
+data_aux[,flag_ckh1:=max(flag_ckh1),i]
+data_aux[,flag_ckh2:=max(flag_ckh2),i]
+
+data_aux[,flag_ckh3:=flag_ckh1*flag_ckh2]
+
+data_ckh &lt;- data_aux[flag_ckh3==1,]
+data_aux &lt;- NULL
+
+# identify the different type of movers q1-&gt;q4, q2-&gt;q4, q3-&gt;q4, q4-&gt;q1, etc.
+data_ckh[, flag_ini:=0]
+data_ckh[, flag_end:=0]
+
+data_ckh[(t&lt;3), flag_ini:=flag_q]
+data_ckh[, flag_ini:=max(flag_ini),i]
+
+data_ckh[(t&gt;4), flag_end:=flag_q]
+data_ckh[, flag_end:=max(flag_end),i]
+
+# mean of log-wages by movement
+data_ckh &lt;- data_ckh[,mean(lw),list(t,flag_ini,flag_end)]</code></pre>
+</div>
+</div>
+<div id="estimating-akm" class="section level1">
+<h1>Estimating AKM</h1>
+<p>This requires to first extract a large connected set, and then to estimate the linear problem with many dummies.</p>
+<div id="extracting-the-connected-set" class="section level2">
+<h2>Extracting the connected set</h2>
+<p>Because we are not going to deal with extremely large data-sets, we can use of the shelf algorithms to extract the connected set. Use the function <code>conComp</code> from the package <code>ggm</code> to extract the connected set from our data. To do so you will need to construct first an adgency matrix between the firms. Here is how I would proceed to construct the adjency matrix:</p>
+<pre class="r"><code>setkey(data,i,t)
+
+adjMat &lt;- function(data){ 
+  setkey(data,i,t)
+  data[ ,fid.l1 := data[J(i,t-1),fid]]
+  data &lt;- data[complete.cases(data)]
+  nfirms = data[,max(fid)]
+  jdata = data[fid.l1!=fid][,list(fid,fid.l1)]
+  jdata = unique(jdata)
+  setkey(jdata,fid,fid.l1)
+  # jdata holds the indices where a sparse matrix should be 1.
+  amat = Matrix::sparseMatrix(i=jdata[,c(fid,fid.l1)],j=jdata[,c(fid.l1,fid)],dims=c(nfirms,nfirms))
+ amat
+}
+
+concomp &lt;- function(data){
+  setkey(data,i,t)
+  data[ ,fid.l1 := data[J(i,t-1),fid]]
+  data &lt;- data[complete.cases(data)]
+  cf = lfe::compfactor(list(f1=data[,factor(fid)],f2=data[,factor(fid.l1)]))
+  fr = data.frame(f1=data[,factor(fid)],f2=data[,factor(fid.l1)],cf)
+  data = data[fr$cf==1]
+  return(data)
+}
+
+
+data &lt;- concomp(data)
+# compute the number of firms:
+aa = unique(data$fid)
+Nfirm_con = length(aa)
+
+print(&quot;proportion of firms in the connected set is&quot;)</code></pre>
+<pre><code>## [1] &quot;proportion of firms in the connected set is&quot;</code></pre>
+<pre class="r"><code>print(Nfirm_con/Nfirm)</code></pre>
+<pre><code>## [1] 0.962147</code></pre>
+</div>
+<div id="estimating-worker-and-firms-fe" class="section level2">
+<h2>Estimating worker and firms FE</h2>
+<p>Finally, we are going to implement the AKM estimator. This can be done simply by updating in turn the worker FE and the firms FE.</p>
+<p>Start by appending 2 new columns <code>alpha_hat</code> and <code>psi_hat</code> to your data. Then loop over the following:</p>
+<ol style="list-style-type: decimal">
+<li>update <code>alpha_hat</code> by just taking the mean within <code>i</code> net of firm FE, use data.table to do that very efficiently</li>
+<li>update <code>psi_hat</code> by just taking the mean within <code>fid</code> net of worker FE, use data.table to do that very efficiently</li>
+</ol>
+<p>Estimating this model is non-trivial. We are going to take the approach of <a href="https://s3.amazonaws.com/academia.edu.documents/42461471/Variable_selection_in_linear_regression20160209-26324-14r87y1.pdf?AWSAccessKeyId=AKIAIWOWYYGZ2Y53UL3A&amp;Expires=1525336798&amp;Signature=I2SdtwWgl0U6e28114dmaiLjlA4%3D&amp;response-content-disposition=inline%3B%20filename%3DVariable_selection_in_linear_regression.pdf#page=130">Guimareas and Portugal</a>, who propose a <em>ZigZag</em> estimator in the Stata Journal. <a href="https://www.sciencedirect.com/science/article/pii/S0167947313001266">Simen Gaure</a> proposes an almost equivalent approach and develops the <a href="https://cran.r-project.org/web/packages/lfe/lfe.pdf"><code>lfe</code></a> package for R. The idea in both approaches starts with the formulation</p>
+<p><span class="math display">\[
+\mathbf{Y} = \mathbf{Z}\beta + \mathbf{D}\alpha + \epsilon
+\]</span></p>
+<p>where <span class="math inline">\(\mathbf{Z}\)</span> is <span class="math inline">\((N,k)\)</span>, and <span class="math inline">\(\mathbf{D}\)</span> is a <span class="math inline">\((N,G_1)\)</span> matrix of dummy variables: element <span class="math inline">\((i,j)\)</span> of <span class="math inline">\(\mathbf{D}\)</span> is <span class="math inline">\(1\)</span> if <span class="math inline">\(i\)</span> is associated to <span class="math inline">\(j\)</span>.</p>
+<p>Both papers show the recursive relationship</p>
+<p><span class="math display">\[
+\left[ \begin{array}{c}
+\beta &amp;=&amp; (\mathbf{Z}&#39;\mathbf{Z})^{-1} \mathbf{Z}&#39;(\mathbf{Y}-\mathbf{D}\alpha) \\
+\alpha &amp;=&amp; (\mathbf{D}&#39;\mathbf{D})^{-1} \mathbf{D}&#39;(\mathbf{Y}-\mathbf{Z}\beta)
+\end{array}
+\right]
+\]</span></p>
+<ul>
+<li>line 2 is just <code>data[,mean(resid(lm(y ~ z))),by=i]</code></li>
+<li>Dimensionality of <span class="math inline">\(\mathbf{D}\)</span> becomes irrelevant.</li>
+<li>Same principle for more than 1 FE:</li>
+</ul>
+<p><span class="math display">\[
+\mathbf{Y} = \mathbf{Z}\beta + \mathbf{D}_1\alpha + \mathbf{D}_2\gamma + \epsilon
+\]</span></p>
+<p>and recursive structure:</p>
+<p><span class="math display">\[
+\left[ \begin{array}{c}
+\beta &amp;=&amp; (\mathbf{Z}&#39;\mathbf{Z})^{-1} \mathbf{Z}&#39;(\mathbf{Y}-\mathbf{D}_1\alpha-\mathbf{D}_2\gamma) \\
+\alpha &amp;=&amp; (\mathbf{D}_1&#39;\mathbf{D}_1)^{-1} \mathbf{D}_1&#39;(\mathbf{Y}-\mathbf{Z}\beta-\mathbf{D}_2\gamma) \\
+\gamma &amp;=&amp; (\mathbf{D}_2&#39;\mathbf{D}_2)^{-1} \mathbf{D}_2&#39;(\mathbf{Y}-\mathbf{Z}\beta-\mathbf{D}_1\alpha)
+\end{array}
+\right]
+\]</span></p>
+<ul>
+<li>First, store a <code>mod = data[,lm(y ~ z + D1 + D2)]</code></li>
+<li>line 2 is just <code>data[,mean(resid(mod) + coef(mod)[3]*D2),by=i]</code></li>
+<li>line 3 is just <code>data[,mean(resid(mod) + coef(mod)[2]*D1),by=j]</code></li>
+</ul>
+<p>Guimaraes+Portugal do this in an iterative fashion until the difference in mean squared error (MSE) of successive estimates of line 0 becomes small.</p>
+<pre class="r"><code>guimaraesPortugal &lt;- function(data,tol=1e-6){
+  setkey(data,i,t)
+  data[,fid.l1 := data[J(i,t-1)][[&quot;fid&quot;]]]
+  data[,move:=fid!=fid.l1]
+  mvid &lt;- data[(move),list(id=unique(i))]
+  data[,alpha_hat := 0.0]
+  data[,psi_hat := 0.0]
+  delta = Inf
+  MSE1 = Inf
+  i = 0
+  while (delta&gt;tol){
+    i = i + 1
+    mod = data[,lm(lw ~ psi_hat + alpha_hat)]
+    coefs = coef(mod)
+    if (i==1){
+      coefs[2:3] &lt;- 0
+    }
+    data[,res := resid(mod)]
+    MSE0 = data[.(mvid$id),mean(res^2)] #You can increase speed by focusing on movers only first to recover the `psi`.
+    delta = abs(MSE0 - MSE1)
+    MSE1 = MSE0
+    data[,alpha_hat := mean(res + coefs[3]*alpha_hat),by=i ]
+    data[,psi_hat := mean(res + coefs[2]*psi_hat),by=fid ]
+    if (i==1 || (i %% 10 == 0)){
+     # flog.info(&quot;iter=%d, MSE=%f, delta(MSE)=%f&quot;,i,MSE0,delta)  
+    }
+  }
+  return(data)
+}
+dd=guimaraesPortugal(data)
+
+# estimated coefs on a simple lm must be one
+summary(lm(lw~alpha_hat+psi_hat,data))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = lw ~ alpha_hat + psi_hat, data = data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.1341 -0.4564 -0.0012  0.4556  3.1662 
+## 
+## Coefficients:
+##             Estimate Std. Error  t value Pr(&gt;|t|)    
+## (Intercept) 0.002374   0.001093    2.171   0.0299 *  
+## alpha_hat   1.000053   0.000976 1024.661   &lt;2e-16 ***
+## psi_hat     1.000106   0.001225  816.327   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.6813 on 388467 degrees of freedom
+## Multiple R-squared:  0.7894, Adjusted R-squared:  0.7894 
+## F-statistic: 7.279e+05 on 2 and 388467 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="computing-the-variance-decomposition" class="section level2">
+<h2>Computing the variance decomposition</h2>
+<p>We now compute the variance decomposition and compare it with its infeasible counterpart, using alpha and psi, instead of <span class="math inline">\(\hat{\alpha}\)</span> and <span class="math inline">\(\hat{\psi}\)</span>.</p>
+<p>The variance decomposition is: <span class="math inline">\((var(\hat{\alpha}),var(\hat{\psi}),cov(\hat{\alpha},\hat{\psi}))\)</span>:</p>
+<pre class="r"><code>c(var(data$alpha_hat),var(data$psi_hat),cov(data$alpha_hat,data$psi_hat))</code></pre>
+<pre><code>## [1]  1.2992197  0.8245260 -0.1922352</code></pre>
+<p>The true variance decomposition is: <span class="math inline">\((var(\alpha),var(\psi),cov(\alpha,\psi))\)</span></p>
+<pre class="r"><code>c(var(data$alpha),var(data$psi),cov(data$alpha,data$psi))</code></pre>
+<pre><code>## [1] 0.6220005 0.3465967 0.2966294</code></pre>
+</div>
+</div>
+
+<!--<a href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a> -->
+<a class="github-fork-ribbon right-bottom fixed" href="https://github.com/elenamanresa/AKM-simulation" title="Fork me on GitHub">Fork me on GitHub</a>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
