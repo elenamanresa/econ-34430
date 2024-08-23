@@ -232,7 +232,7 @@ This requires to first extract a large connected set, and then to estimate the l
 
 ## Extracting the connected set
 
-Because we are not going to deal with extremely large data-sets, we can use of the shelf algorithms to extract the connected set. Use the function `conComp` from the package `ggm` to extract the connected set from our data. To do so you will need to construct first an adgency matrix between the firms. Here is how I would proceed to construct the adjency matrix:
+Because we are not going to deal with extremely large data-sets, we can use off the shelf algorithms to extract the connected set. Use the function `conComp` from the package `ggm` to extract the connected set from our data. To do so you will need to construct first an adgency matrix between the firms. Here is how I would proceed to construct the adjency matrix:
 
 
 
