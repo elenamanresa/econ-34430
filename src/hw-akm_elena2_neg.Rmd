@@ -47,13 +47,13 @@ alpha = qnorm(1:nl/(nl+1)) * psi_sd
 # let's assume moving PR is fixed
 lambda = 0.05
 
-csort = -0.5 # sorting effect
+csort = 0.5 # sorting effect
 cnetw = 0.2 # network effect
 csig  = 0.5 
 
 # lets create type specific transition matrices
 # we are going to use joint normal centered on different values
-G = array(0,c(nl,nk,nk)) # def: conditional distribution k,k' given l
+G = array(0,c(nl,nk,nk)) # def: conditional distribution k' given k, l
 for (l in 1:nl) for (k in 1:nk) {
   #G[l,k,] = dnorm(csort*(psi[k] - alpha[l])) * dnorm(cnetw*(psi[k] - psi))
   G[l,k,] = dnorm( psi - cnetw *psi[k] - csort * alpha[l],sd = csig)

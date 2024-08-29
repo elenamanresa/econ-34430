@@ -340,6 +340,7 @@ div.tocify {
     Home
   </a>
 </li>
+<<<<<<< Updated upstream
 <li>
   <a href="notes.html">
     <span class="fa fa-calendar"></span>
@@ -393,6 +394,9 @@ div.tocify {
     </li>
   </ul>
 </li>
+=======
+<li class="dropdown-header">Labs</li>
+>>>>>>> Stashed changes
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -411,7 +415,11 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Simulation on AKM fixed effects</h1>
+<<<<<<< Updated upstream
 <h4 class="date">02 May, 2024</h4>
+=======
+<h4 class="date">19 September, 2023</h4>
+>>>>>>> Stashed changes
 
 </div>
 
@@ -638,7 +646,11 @@ Nfirm_con = length(aa)
 print(&quot;proportion of firms in the connected set is&quot;)</code></pre>
 <pre><code>## [1] &quot;proportion of firms in the connected set is&quot;</code></pre>
 <pre class="r"><code>print(Nfirm_con/Nfirm)</code></pre>
+<<<<<<< Updated upstream
 <pre><code>## [1] 0.962147</code></pre>
+=======
+<pre><code>## [1] 0.9539263</code></pre>
+>>>>>>> Stashed changes
 </div>
 <div id="estimating-worker-and-firms-fe" class="section level2">
 <h2>Estimating worker and firms FE</h2>
@@ -722,6 +734,7 @@ summary(lm(lw~alpha_hat+psi_hat,data))</code></pre>
 ## lm(formula = lw ~ alpha_hat + psi_hat, data = data)
 ## 
 ## Residuals:
+<<<<<<< Updated upstream
 ##     Min      1Q  Median      3Q     Max 
 ## -3.1341 -0.4564 -0.0012  0.4556  3.1662 
 ## 
@@ -736,16 +749,39 @@ summary(lm(lw~alpha_hat+psi_hat,data))</code></pre>
 ## Residual standard error: 0.6813 on 388467 degrees of freedom
 ## Multiple R-squared:  0.7894, Adjusted R-squared:  0.7894 
 ## F-statistic: 7.279e+05 on 2 and 388467 DF,  p-value: &lt; 2.2e-16</code></pre>
+=======
+##      Min       1Q   Median       3Q      Max 
+## -3.12926 -0.45563  0.00105  0.45547  3.04285 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -0.0038910  0.0010960   -3.55 0.000385 ***
+## alpha_hat    1.0000504  0.0009727 1028.09  &lt; 2e-16 ***
+## psi_hat      1.0001035  0.0011973  835.27  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.6813 on 386455 degrees of freedom
+## Multiple R-squared:  0.788,  Adjusted R-squared:  0.788 
+## F-statistic: 7.181e+05 on 2 and 386455 DF,  p-value: &lt; 2.2e-16</code></pre>
+>>>>>>> Stashed changes
 </div>
 <div id="computing-the-variance-decomposition" class="section level2">
 <h2>Computing the variance decomposition</h2>
 <p>We now compute the variance decomposition and compare it with its infeasible counterpart, using alpha and psi, instead of <span class="math inline">\(\hat{\alpha}\)</span> and <span class="math inline">\(\hat{\psi}\)</span>.</p>
 <p>The variance decomposition is: <span class="math inline">\((var(\hat{\alpha}),var(\hat{\psi}),cov(\hat{\alpha},\hat{\psi}))\)</span>:</p>
 <pre class="r"><code>c(var(data$alpha_hat),var(data$psi_hat),cov(data$alpha_hat,data$psi_hat))</code></pre>
+<<<<<<< Updated upstream
 <pre><code>## [1]  1.2992197  0.8245260 -0.1922352</code></pre>
 <p>The true variance decomposition is: <span class="math inline">\((var(\alpha),var(\psi),cov(\alpha,\psi))\)</span></p>
 <pre class="r"><code>c(var(data$alpha),var(data$psi),cov(data$alpha,data$psi))</code></pre>
 <pre><code>## [1] 0.6220005 0.3465967 0.2966294</code></pre>
+=======
+<pre><code>## [1]  1.3399049  0.8843516 -0.2496638</code></pre>
+<p>The true variance decomposition is: <span class="math inline">\((var(\alpha),var(\psi),cov(\alpha,\psi))\)</span></p>
+<pre class="r"><code>c(var(data$alpha),var(data$psi),cov(data$alpha,data$psi))</code></pre>
+<pre><code>## [1] 0.6201525 0.3437181 0.2931086</code></pre>
+>>>>>>> Stashed changes
 </div>
 </div>
 
