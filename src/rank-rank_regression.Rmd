@@ -17,6 +17,7 @@ require(data.table)
 require(reshape)
 require(lattice)
 require(gridExtra)
+require(csranks)
 ```
 
 # Constructing Employer-Employee matched data
@@ -28,8 +29,8 @@ One central piece is to have a network of workers and firms over time. We then s
 We are going to model the mobility between workers and firms. Given a transition matrix we can solve for a stationary distrubtion, and then construct our panel from there.
 
 ```{r}
-nk = 100
-nl = 100
+nk = 50
+nl = 50
 
 
 ## Calibration to CHK data
@@ -37,8 +38,8 @@ nl = 100
 # alpha_sd = 0.29
 # w_sigma = 0.37
 
-alpha_sd = 10
-psi_sd   = 10
+alpha_sd = 1
+psi_sd   = 1
 
 # let's draw some FE
 psi   = qnorm(1:nk/(nk+1)) * alpha_sd
@@ -47,9 +48,9 @@ alpha = qnorm(1:nl/(nl+1)) * psi_sd
 # let's assume moving PR is fixed
 lambda = 0.05
 
-csort = 0.5 # sorting effect
+csort = 0.9 # sorting effect
 cnetw = 0.2 # network effect
-csig  = 0.5 
+csig  = 0.1
 
 # lets create type specific transition matrices
 # we are going to use joint normal centered on different values
@@ -71,15 +72,15 @@ for (l in 1:nl) {
  }
 }
 
-Plot1=wireframe(G[1,,],aspect = c(1,1),xlab = "previous firm",ylab="next firm")
-Plot2=wireframe(G[nl,,],aspect = c(1,1),xlab = "previous firm",ylab="next firm")
-grid.arrange(Plot1, Plot2,nrow=1)
+#=wireframe(G[1,,],aspect = c(1,1),xlab = "previous firm",ylab="next firm")
+#Plot2=wireframe(G[nl,,],aspect = c(1,1),xlab = "previous firm",ylab="next firm")
+#grid.arrange(Plot1, Plot2,nrow=1)
 ```
 
 And we can plot the joint distribution of matches
 
 ```{r}
-wireframe(H,aspect = c(1,1),xlab = "worker",ylab="firm")
+wireframe(H,aspect = c(1,1), xlab = "worker skills",ylab="job skills")
 ```
 
 The next step is to simulate our network given our transitions rules. 
@@ -117,7 +118,58 @@ data <- data[,spell := data2$value] # number of spells
 data <- data[,l := A[i],i] # worker type
 data <- data[,alpha := alpha[l],l] # worker FE
 data <- data[,psi := psi[k],k] # firm FE
+data[,alpha:=alpha*2+3]
 ```
+
+
+## Calculating rank-rank regression
+
+```{r}
+
+lmr_model <- lmranks(r(alpha) ~ r(psi), data=data)
+summary(lmr_model)
+
+```
+
+## Calculating rank-rank regression coarsening the heterogeneity
+
+```{r}
+
+nk2 = 5
+nl2 = 5
+
+alpha_sd = 1
+psi_sd   = 1
+
+# let's draw some FE
+psi2   = qnorm(1:nk2/(nk2+1)) * alpha_sd
+alpha2 = qnorm(1:nl2/(nl2+1)) * psi_sd
+
+data[,alpha2_pos:=0]
+alpha_list = data$alpha
+psi_list = data$psi
+alpha_list2 = c(0,ni*nt)
+psi_list2 = c(0,ni*nt)
+pos_alpha=c(0,ni*nt)
+pos_psi=c(0,ni*nt)
+for(i in 1:ni){
+  for(t in 1:nt){
+    ind = (i-1)*nt+t
+    pos_alpha[ind] = which.min(abs(alpha_list[ind]-alpha2))
+    pos_psi[ind] = which.min(abs(psi_list[ind]-psi2))
+    alpha_list2[ind] = alpha2[pos_alpha[ind]]
+    psi_list2[ind] = psi2[pos_psi[ind]]
+  }
+}
+
+data[,alpha2:=alpha_list2]
+data[,psi2:=psi_list2]
+
+lmr_model_coarse <- lmranks(r(alpha2) ~ r(psi2), data=data)
+summary(lmr_model_coarse)
+
+```
+
 
 
 The final step is assigning identities to firms. We are going to do this by randomly assigning firm ids to spells.
@@ -161,13 +213,6 @@ data <- data[, movers_size:= firm_mover[fid,V1]]
 # PLOTS
 hist(data[t==1]$firm_size) # at any t, the firm size distribution is the same
 hist(data$movers_size)
-
-```
-## Calculating rank-rank regression
-
-```{r}
-library(csranks)
-lmr_model <- lmranks(r(alpha) ~ r(psi), data=data)
 
 ```
 
